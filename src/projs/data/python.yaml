@@ -1,0 +1,12 @@
+actions:
+  - name: Create virtual environment
+    type: shell
+    command: python3 -m venv .venv
+
+  - name: Activate virtual environment
+    type: shell
+    command: source .venv/bin/activate
+
+  - name: Upgrade pip
+    type: shell
+    command: pip install --upgrade pip

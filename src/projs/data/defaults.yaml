@@ -1,0 +1,45 @@
+licenses:
+  - MIT
+  - GPL v3
+  - Apache 2.0
+  - BSD 3-Clause
+  - ISC
+  - Custom/Other
+
+languages:
+  - python
+  - javascript
+  - flutter
+  - bash
+  - other
+
+gitignore:
+  python:
+    - .venv/
+    - __pycache__/
+    - "*.pyc"
+    - .env
+    - dist/
+    - build/
+    - "*.egg-info/"
+
+  javascript:
+    - node_modules/
+    - dist/
+    - .env
+    - .env.local
+    - npm-debug.log*
+    - yarn-debug.log*
+    - yarn-error.log*
+
+  flutter:
+    - .dart_tool/
+    - .flutter-plugins
+    - .flutter-plugins-dependencies
+    - .packages
+    - build/
+
+  bash:
+    - .env
+    - "*.swp"
+    - "*.swo"
