@@ -7,10 +7,8 @@ import subprocess
 
 class TMuxSession:
     """Manages tmux session creation and attachment."""
-    
     def __init__(self, session_name: str):
         self.session_name = session_name
-    
     def session_exists(self) -> bool:
         """Check if session already exists."""
         try:
@@ -22,7 +20,6 @@ class TMuxSession:
             return True
         except subprocess.CalledProcessError:
             return False
-    
     def create(self) -> None:
         """Create a new tmux session (does nothing if already exists)."""
         if not self.session_exists():

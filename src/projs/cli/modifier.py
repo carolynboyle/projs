@@ -2,12 +2,11 @@
 projs.modifier - Project modification flow
 """
 
-import json
 from typing import List
 
 from projs.config import ConfigManager
 from projs.manifest import ManifestStore, ProjectManifest, ManifestCommand
-from projs.prompts import PromptHelper
+from projs.cli.prompts import PromptHelper
 from projs.commands import CommandLibrary
 
 

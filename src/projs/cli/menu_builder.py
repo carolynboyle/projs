@@ -9,7 +9,7 @@ Supports token substitution in display strings:
   {package_manager} — current package manager from system config
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List
 
 
 class MenuItem:

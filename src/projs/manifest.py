@@ -24,6 +24,7 @@ class ManifestCommand:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ManifestCommand":
+        """Create a ManifestCommand from a dictionary."""
         return cls(
             seq=data["seq"],
             command=data["command"],
@@ -31,6 +32,7 @@ class ManifestCommand:
         )
 
     def to_dict(self) -> Dict[str, Any]:
+        """Create a ManifestCommand from a dictionary."""
         return {
             "seq": self.seq,
             "command": self.command,
@@ -50,7 +52,7 @@ class ProjectManifest:
         description: str,
         language: str,
         path: str,
-        license: str,
+        proj_license: str,
         gitignore: List[str],
         commands: List[ManifestCommand],
     ):
@@ -58,7 +60,7 @@ class ProjectManifest:
         self.description = description
         self.language = language
         self.path = path
-        self.license = license
+        self.license = proj_license
         self.gitignore = gitignore
         self.commands = commands
 
@@ -80,7 +82,7 @@ class ProjectManifest:
             description=data["description"],
             language=data["language"],
             path=data["path"],
-            license=data["license"],
+            proj_license=data["license"],
             gitignore=data.get("gitignore", []),
             commands=commands,
         )
@@ -148,3 +150,12 @@ class ManifestStore:
             data = json.loads(path.read_text())
             manifests.append(ProjectManifest.from_dict(data))
         return manifests
+    def delete(self, project_name: str) -> None:
+        """Delete a project manifest and its backup (if any)."""
+        path = self.config.manifest_path(project_name)
+        if path.exists():
+            path.unlink()
+
+        backup = self.config.backup_path(project_name)
+        if backup.exists():
+            backup.unlink()

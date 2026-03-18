@@ -9,7 +9,6 @@ __version__ = "0.1.0"
 __author__ = "Frazzled"
 __description__ = "Project launcher and setup manager for homelab"
 
-# Expose main entry point
-from projs.main import cli
+from projs.cli.main import cli
 
 __all__ = ["cli"]

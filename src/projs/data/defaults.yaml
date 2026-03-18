@@ -13,6 +13,16 @@ languages:
   - bash
   - other
 
+editors:
+  - codium
+  - geany
+  - kate
+  - nano
+  - vim
+  - neovim
+  - emacs
+  - custom
+
 gitignore:
   python:
     - .venv/

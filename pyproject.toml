@@ -7,7 +7,7 @@ name = "projs"
 version = "0.1.0"
 description = "Project launcher and setup manager for homelab"
 authors = [
-    {name = "Frazzled", email = "user@example.com"}
+    {name = "Carolyn Boyle", email = "carolyn@whyacantyoujust.tech"}
 ]
 requires-python = ">=3.11"
 dependencies = [
@@ -15,13 +15,18 @@ dependencies = [
 ]
 
 [project.scripts]
-projs = "projs.main:cli"
+projs = "projs.cli.main:cli"
+projs-gui = "projs.gui.app:main"
 
 [project.optional-dependencies]
+gui = [
+    "ttkbootstrap>=1.10",
+]
 dev = [
     "pytest>=7.0",
     "black>=23.0",
     "mypy>=1.0",
+    "pylint>=3.0",
 ]
 
 [tool.setuptools]
@@ -31,4 +36,13 @@ package-dir = {"" = "src"}
 find = {where = ["src"]}
 
 [tool.setuptools.package-data]
-projs = ["data/*.yaml", "data/*.json", "data/language-actions/*.yaml"]
+projs = [
+    "data/*.yaml",
+    "data/*.json",
+    "data/language-actions/*.yaml",
+    "data/themes/**/*.yaml",
+    "data/themes/**/*.png",
+]
+
+[tool.pylint.format]
+max-line-length = 120

@@ -19,11 +19,6 @@
       "id": "git_commit",
       "name": "Initial commit",
       "command": "git add . && git commit -m \"Initial project scaffold\""
-    },
-    {
-      "id": "pytest",
-      "name": "Run pytest",
-      "command": "pytest"
     }
   ]
 }

@@ -6,8 +6,12 @@
 # in your project directory. You can achieve the same result by adding
 # your editor as a custom command on any project instead.
 
-editor: ""  # prompted on first run
+editor: ""              # prompted on first run
 package_manager: unknown  # auto-detected on first run from platforms.yaml
+
+launch_mode: standard   # standard | debug
+                        # standard — fire commands and attach tmux immediately
+                        # debug    — show command log, wait for manual Go
 
 preferences:
   clear_screen_on_menu: true

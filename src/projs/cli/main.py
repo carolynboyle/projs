@@ -7,16 +7,20 @@ Main CLI entry point with menu-driven interface.
 import sys
 import os
 import argparse
+import shutil
 from pathlib import Path
 import pydoc
 
+import yaml
+
 from projs.config import ConfigManager
 from projs.manifest import ManifestStore
-from projs.prompts import PromptHelper
-from projs.menu_builder import MenuBuilder
-from projs.creator import ProjectCreator
-from projs.launcher import ProjectLauncher
-from projs.modifier import ProjectModifier
+from projs._setup import initialize_projs, _DATA_DIR
+from projs.cli.prompts import PromptHelper
+from projs.cli.menu_builder import MenuBuilder
+from projs.cli.creator import ProjectCreator
+from projs.cli.launcher import ProjectLauncher
+from projs.cli.modifier import ProjectModifier
 
 
 class ProjectsApp:
@@ -31,8 +35,6 @@ class ProjectsApp:
 
     def _check_first_run(self):
         """Initialize projs on first run if config doesn't exist."""
-        from projs._setup import initialize_projs
-
         if not self.config.system_file.exists():
             print("First run: Initializing projs...")
             initialize_projs()
@@ -52,6 +54,8 @@ class ProjectsApp:
                 self.launch_project()
             elif choice == "modify_project":
                 self.modify_project()
+            elif choice == "delete_project":
+                self.delete_project()
             elif choice == "settings":
                 self.settings_menu()
             elif choice == "help":
@@ -81,7 +85,7 @@ class ProjectsApp:
             print(f"   License:     {manifest.license}")
             print(f"   Path:        {manifest.path}")
             print(f"   Description: {manifest.description}")
-            print(f"   Commands:")
+            print("   Commands:")
             print(f"     [  0] cd {manifest.expanded_path()}  (automatic)")
             for cmd in manifest.sorted_commands():
                 desc = f"  # {cmd.description}" if cmd.description else ""
@@ -136,6 +140,37 @@ class ProjectsApp:
 
         input("\nPress Enter to continue...")
 
+    def delete_project(self):
+        """Delete an existing project (with double confirmation)."""
+        manifests = self.manifest_store.list_all()
+
+        if not manifests:
+            print("\nNo projects found.")
+            input("Press Enter to continue...")
+            return
+
+        print("\nSelect a project to delete:")
+        options = [f"{m.name} ({m.language})" for m in manifests]
+        choice_idx = self.prompt.choice("Project", options)
+        selected = manifests[choice_idx]
+
+        print(f"\nYou are about to delete '{selected.name}'.")
+        print("This cannot be undone.")
+        if not self.prompt.yes_no("Are you sure?", default=False):
+            print("Delete cancelled.")
+            input("\nPress Enter to continue...")
+            return
+
+        print(f"\nFinal confirmation: permanently delete '{selected.name}'?")
+        if not self.prompt.yes_no("Confirm delete", default=False):
+            print("Delete cancelled.")
+            input("\nPress Enter to continue...")
+            return
+
+        self.manifest_store.delete(selected.name)
+        print(f"\n✓ Project '{selected.name}' deleted.")
+        input("\nPress Enter to continue...")
+
     def settings_menu(self):
         """Settings submenu."""
         while True:
@@ -179,7 +214,6 @@ class ProjectsApp:
         print("\n-- Edit Package Manager --")
         print(f"Current: {self.config.get_package_manager()}")
 
-        # Load options from platforms.yaml
         options = self._get_package_manager_options()
         if options:
             print("\nKnown options:")
@@ -214,8 +248,6 @@ class ProjectsApp:
 
     def _get_package_manager_options(self) -> list:
         """Load all known package manager options from platforms.yaml."""
-        import yaml
-        from projs._setup import _DATA_DIR
         platforms_file = _DATA_DIR / "platforms.yaml"
 
         if not platforms_file.exists():
@@ -230,7 +262,7 @@ class ProjectsApp:
                         if opt not in options:
                             options.append(opt)
             return options
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             return []
 
     def _view_config_file(self):
@@ -242,7 +274,7 @@ class ProjectsApp:
         try:
             config_text = self.config.system_file.read_text()
             pydoc.pager(config_text)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             print(f"Error reading config: {e}")
 
         input("\nPress Enter to continue...")
@@ -258,9 +290,6 @@ class ProjectsApp:
             input("\nPress Enter to continue...")
             return
 
-        from projs._setup import _DATA_DIR
-        import shutil
-
         copies = [
             (_DATA_DIR / "defaults.yaml", self.config.defaults_file),
             (_DATA_DIR / "menus.yaml",    self.config.menus_file),
@@ -273,10 +302,9 @@ class ProjectsApp:
             try:
                 shutil.copy2(src, dst)
                 print(f"✓ Reset {dst.name}")
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-except
                 print(f"✗ Error resetting {dst.name}: {e}")
 
-        # Reload config
         self.config = ConfigManager()
         self.menu_builder = MenuBuilder(self.config, self.prompt)
         print("\n✓ Defaults restored. Configuration reloaded.")
@@ -304,17 +332,11 @@ class ProjectsApp:
                     pydoc.pager(readme_text)
                 else:
                     print("\n[README.md is empty]")
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-except
                 print(f"\nError reading README: {e}")
         else:
-            print("\n[Help files will be here]")
-            print(f"\nREADME location: {readme_path}")
-            print("\nIn the meantime, use the menus to:")
-            print("  1. Create new projects")
-            print("  2. List your projects")
-            print("  3. Launch projects in tmux")
-            print("  4. Modify project settings")
-            print("  5. Configure your preferences")
+            print(f"\nREADME not found at {readme_path}")
+            print("The package may be incomplete. Consider reinstalling.")
 
         input("\nPress Enter to continue...")
 

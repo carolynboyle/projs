@@ -2,16 +2,15 @@
 projs.creator - Interactive project creation flow
 """
 
-from pathlib import Path
 from typing import List
 import json
 
 from projs.config import ConfigManager
 from projs.manifest import ManifestStore, ProjectManifest, ManifestCommand
-from projs.prompts import PromptHelper
 from projs.commands import CommandLibrary
-from projs.menu_builder import MenuBuilder
 from projs.language_actions import LanguageActions
+from projs.cli.prompts import PromptHelper
+from projs.cli.menu_builder import MenuBuilder
 
 
 class ProjectCreator:
@@ -45,7 +44,7 @@ class ProjectCreator:
             description=description,
             language=language,
             path=f"~/projects/{name}",
-            license=license_type,
+            proj_license=license_type,
             gitignore=gitignore,
             commands=commands,
         )
@@ -57,7 +56,7 @@ class ProjectCreator:
             if self.prompt.yes_no("Create README.md?", default=True):
                 readme_path = project_path / "README.md"
                 readme_path.write_text(f"# {name}\n\n{description}\n")
-                print(f"✓ Created README.md")
+                print("✓ Created README.md")
 
             self.manifest_store.save(manifest)
             print(f"\n✓ Project '{name}' created successfully!")
@@ -131,17 +130,33 @@ class ProjectCreator:
         print("Note: 'cd {project_dir}' is always run first automatically (seq 0).")
         print("Commands are executed in sequence order.\n")
 
-        # If editor is set, offer to add it as the last command
+        # Offer editor as launch command
         editor = self.config.get_editor()
         if editor:
             if self.prompt.yes_no(f"Add '{editor} .' as launch command?", default=True):
-                # Suggest seq 90 so it runs last by convention
                 commands.append(ManifestCommand(
                     seq=90,
                     command=f"{editor} .",
                     description=f"Launch {editor}",
                 ))
-                print(f"✓ Added: [{90}] {editor} .")
+                print(f"✓ Added: [90] {editor} .")
+            else:
+                # User wants a different editor for this project
+                choice = self.menu_builder.display_menu("editor_menu")
+                if choice == "custom_editor":
+                    selected_editor = self.prompt.text("Editor command").strip()
+                elif choice == "back":
+                    selected_editor = None
+                else:
+                    selected_editor = choice
+
+                if selected_editor:
+                    commands.append(ManifestCommand(
+                        seq=90,
+                        command=f"{selected_editor} .",
+                        description=f"Launch {selected_editor}",
+                    ))
+                    print(f"✓ Added: [90] {selected_editor} .")
 
         while True:
             all_cmds = self.command_library.get_all()
@@ -151,7 +166,9 @@ class ProjectCreator:
 
             print("\nCommand library:")
             for i, cmd in enumerate(all_cmds, 1):
-                print(f"  {i}. {cmd['name']}  ({cmd['command']})")
+                # venv entry uses create_command/activate_command, not command
+                display_cmd = cmd.get('command') or cmd.get('create_command', '')
+                print(f"  {i}. {cmd['name']}  ({display_cmd})")
             print(f"  {len(all_cmds) + 1}. Add custom command")
             print(f"  {len(all_cmds) + 2}. Done")
 
@@ -167,54 +184,34 @@ class ProjectCreator:
             if choice == len(all_cmds) + 2:
                 break
             elif choice == len(all_cmds) + 1:
-                # Custom command
                 cmd_str = self.prompt.text("Command").strip()
                 if not cmd_str:
                     continue
                 desc = self.prompt.text("Description (optional)").strip()
-                seq = self._prompt_seq(commands)
+                seq = self._next_seq(commands)
                 commands.append(ManifestCommand(seq=seq, command=cmd_str, description=desc))
                 print(f"✓ Added: [{seq}] {cmd_str}")
             else:
-                # Library command
                 selected = all_cmds[choice - 1]
-                desc = self.prompt.text(
-                    f"Description",
-                    default=selected['name']
-                ).strip()
-                seq = self._prompt_seq(commands)
+                name = selected['name']
+                desc = self.prompt.text(f"Description [{name}]").strip() or name
+                seq = self._next_seq(commands)
                 commands.append(ManifestCommand(
                     seq=seq,
                     command=selected['id'],
                     description=desc,
                 ))
-                print(f"✓ Added: [{seq}] {selected['name']}")
+                print(f"✓ Added: [{seq}] {name}")
 
         return commands
 
-    def _prompt_seq(self, current_commands: List[ManifestCommand]) -> int:
-        """Prompt for sequence number, suggesting next available."""
-        if current_commands:
-            suggested = max(c.seq for c in current_commands) + 10
-            # Don't suggest past the editor slot (90)
-            if suggested >= 90:
-                suggested = 90 - 10
-        else:
-            suggested = 10
-
-        while True:
-            try:
-                raw = self.prompt.text(f"Sequence number", default=str(suggested)).strip()
-                seq = int(raw)
-                if seq == 0:
-                    print("Seq 0 is reserved for 'cd {project_dir}'.")
-                    continue
-                if seq == 90 and any(c.seq == 90 for c in current_commands):
-                    print("Seq 90 is already used. Choose another.")
-                    continue
-                return seq
-            except ValueError:
-                print("Please enter a number.")
+    def _next_seq(self, current_commands: List[ManifestCommand]) -> int:
+        """Auto-assign next sequence number, skipping 90 (reserved for editor)."""
+        used = {c.seq for c in current_commands}
+        seq = 10
+        while seq in used or seq == 90:
+            seq += 10
+        return seq
 
     def _show_dryrun(self, manifest: ProjectManifest) -> bool:
         """Show dry-run of what will be created and ask for confirmation."""
@@ -241,7 +238,9 @@ class ProjectCreator:
         if all_actions:
             print(f"\n  Language-specific actions ({manifest.language}):")
             for action in all_actions:
-                print(f"         • {action.get('name', 'unnamed')} ({action.get('type', 'unknown')})")
+                name = action.get('name', 'unnamed')
+                kind = action.get('type', 'unknown')
+                print(f"         • {name} ({kind})")
 
         print()
         for cmd in manifest.sorted_commands():

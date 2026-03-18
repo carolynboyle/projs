@@ -105,6 +105,24 @@ class ConfigManager:
         """Get preferred editor."""
         return self.system.get("editor", "")
 
+    def get_editors(self) -> list:
+        """Get list of known editors."""
+        return self.defaults.get("editors", [])
+
+    def get_launch_mode(self) -> str:
+        """Get launch mode: 'standard' or 'debug'."""
+        return self.system.get("launch_mode", "standard")
+
+    def set_editor(self, editor: str) -> None:
+        """Save editor preference to system.yaml."""
+        self.system["editor"] = editor
+        self.save_system(self.system)
+
+    def set_launch_mode(self, mode: str) -> None:
+        """Save launch mode to system.yaml."""
+        self.system["launch_mode"] = mode
+        self.save_system(self.system)
+
     def get_package_manager(self) -> str:
         """Get package manager."""
         return self.system.get("package_manager", "unknown")
