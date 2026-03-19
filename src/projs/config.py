@@ -22,6 +22,7 @@ class ConfigManager:
     def __init__(self, config_root: Optional[Path] = None):
         """Initialize config manager with root directory."""
         self.root = config_root or (Path.home() / ".projects")
+        self.drafts_dir = self.root / "drafts"
         self.manifests_dir = self.root / "manifests"
         self.backups_dir = self.root / "backups"
         self.templates_dir = self.root / "templates"
@@ -52,6 +53,7 @@ class ConfigManager:
         """Create all necessary directories if they don't exist."""
         for dir_path in [
             self.root,
+            self.drafts_dir,
             self.manifests_dir,
             self.backups_dir,
             self.templates_dir,
@@ -73,7 +75,7 @@ class ConfigManager:
                     data = yaml.safe_load(path.read_text())
                     if data:
                         return data
-                except Exception as e:
+                except (yaml.YAMLError, OSError) as e:
                     print(f"Warning: could not load {path}: {e}")
 
         print(f"Warning: no config found at {user_path} or {data_path}")
@@ -84,7 +86,7 @@ class ConfigManager:
         try:
             self.system_file.write_text(yaml.dump(config, default_flow_style=False))
             self.system = config
-        except Exception as e:
+        except OSError as e:
             print(f"Error saving system config: {e}")
 
     # -- Convenience accessors ------------------------------------------------

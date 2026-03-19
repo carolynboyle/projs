@@ -298,6 +298,7 @@ class _StepIndicator(ttk.Frame):
         self.set_step(0)
 
     def set_step(self, index: int):
+        """docstring"""
         for i, lbl in enumerate(self._labels):
             lbl.configure(bootstyle=PRIMARY if i == index else SECONDARY)
 

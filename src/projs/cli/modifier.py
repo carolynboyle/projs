@@ -206,7 +206,8 @@ class ProjectModifier:
 
         print("\nCommand library:")
         for i, cmd in enumerate(all_cmds, 1):
-            print(f"  {i}. {cmd['name']}  ({cmd['command']})")
+            #print(f"  {i}. {cmd['name']}  ({cmd['command']})")
+            print(f"  {i}. {cmd['name']}  ({cmd.get('command') or cmd.get('create_command', '')})")
 
         while True:
             try:
