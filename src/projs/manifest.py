@@ -214,6 +214,12 @@ class ProjectDraft:
             "create_docs": self.create_docs,
         }
 
+    def expanded_path(self) -> Path:
+        """Return path with ~ expanded to home directory, or None if path not set."""
+        if not self.path:
+            return None
+        return Path(self.path).expanduser()
+
     def is_complete(self) -> bool:
         """Return True if all required fields are populated."""
         return all([self.name, self.language, self.path, self.license])
