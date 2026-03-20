@@ -1,0 +1,73 @@
+# menus.yaml
+
+**Path:** src/projs/data/menus.yaml
+**Syntax:** yaml
+**Generated:** 2026-03-19 14:56:23
+
+```yaml
+main_menu:
+  name: "main_menu"
+  title: "PROJS - Project Manager"
+  items:
+    - id: list_projects
+      display: "List projects"
+    - id: create_project
+      display: "Create new project"
+    - id: import_project
+      display: "Import existing project"
+    - id: launch_project
+      display: "Launch project"
+    - id: modify_project
+      display: "Modify project"
+    - id: delete_project
+      display: "Delete project"
+    - id: settings
+      display: "Settings"
+    - id: help
+      display: "Help"
+    - id: quit
+      display: "Quit"
+
+settings_menu:
+  name: "settings_menu"
+  title: "SETTINGS"
+  items:
+    - id: edit_editor
+      display: "Editor: {editor}"
+    - id: edit_package_manager
+      display: "Package Manager: {package_manager}"
+    - id: view_config
+      display: "View Configuration File"
+    - id: reset_defaults
+      display: "Reset to Defaults"
+    - id: back
+      display: "Back to Main Menu"
+
+editor_menu:
+  name: "editor_menu"
+  title: "Select Editor"
+  items:
+    - id: nano
+      display: "nano"
+    - id: vim
+      display: "vim"
+    - id: codium
+      display: "Codium"
+    - id: vscode
+      display: "Visual Studio Code"
+    - id: emacs
+      display: "Emacs"
+    - id: custom_editor
+      display: "Enter custom command"
+    - id: back
+      display: "Back"
+
+help_menu:
+  name: "help_menu"
+  title: "HELP - projs Documentation"
+  items:
+    - id: view_help
+      display: "View Help (README)"
+    - id: back
+      display: "Back to Main Menu"
+```

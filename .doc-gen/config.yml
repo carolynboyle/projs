@@ -1,0 +1,68 @@
+# doc-gen Configuration Template: doc-config.yml.template
+# Copy this to .doc-gen/config.yml and customize as needed
+
+# Project settings
+project:
+  name: "My Project"
+  root: "."
+  
+# Output settings  
+output:
+  base_dir: ".doc-gen/output"
+  format: "markdown"
+  
+# Syntax highlighting mappings
+syntax_map:
+  # Programming languages
+  .py: python
+  .js: javascript
+  .ts: typescript
+  .java: java
+  .cpp: cpp
+  .c: c
+  .go: go
+  .rs: rust
+  .rb: ruby
+  .php: php
+  
+  # Shell scripts
+  .sh: bash
+  .bash: bash
+  .zsh: zsh
+  
+  # Config files
+  .yml: yaml
+  .yaml: yaml
+  .toml: toml
+  .json: json
+  .ini: ini
+  .cfg: ini
+  .conf: bash
+  
+  # Systemd/Podman
+  .service: ini
+  .container: ini
+  .network: ini
+  .volume: ini
+  
+  # Web
+  .html: html
+  .css: css
+  .scss: scss
+  .xml: xml
+  
+  # Documentation
+  .md: markdown
+  .rst: rst
+  .txt: text
+  
+  # Other
+  .sql: sql
+  .env: bash
+  .gitignore: bash
+
+# Documentation settings
+documentation:
+  include_timestamps: true
+  include_file_paths: true
+  add_table_of_contents: false

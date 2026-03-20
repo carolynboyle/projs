@@ -1,0 +1,27 @@
+# language-actions.yaml
+
+**Path:** src/projs/data/language-actions.yaml
+**Syntax:** yaml
+**Generated:** 2026-03-19 14:56:23
+
+```yaml
+actions:
+  - name: Create virtual environment
+    type: shell
+    command: python3 -m venv .venv
+    # Skip silently if .venv already exists — never clobber installed packages.
+    idempotent_check: .venv
+
+  - name: Activate virtual environment
+    type: shell
+    command: source .venv/bin/activate
+    # Warn and skip if .venv hasn't been created yet.
+    requires_path: .venv
+
+  - name: Upgrade pip
+    type: shell
+    command: pip install --upgrade pip
+    # pip upgrade only makes sense inside an activated venv.
+    requires_path: .venv
+
+```

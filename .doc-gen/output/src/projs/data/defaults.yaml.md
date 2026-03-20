@@ -1,0 +1,64 @@
+# defaults.yaml
+
+**Path:** src/projs/data/defaults.yaml
+**Syntax:** yaml
+**Generated:** 2026-03-19 14:56:23
+
+```yaml
+licenses:
+  - MIT
+  - GPL v3
+  - Apache 2.0
+  - BSD 3-Clause
+  - ISC
+  - Custom/Other
+
+languages:
+  - python
+  - javascript
+  - flutter
+  - bash
+  - other
+
+editors:
+  - codium
+  - geany
+  - kate
+  - nano
+  - vim
+  - neovim
+  - emacs
+  - custom
+
+gitignore:
+  python:
+    - .venv/
+    - __pycache__/
+    - "*.pyc"
+    - .env
+    - dist/
+    - build/
+    - "*.egg-info/"
+
+  javascript:
+    - node_modules/
+    - dist/
+    - .env
+    - .env.local
+    - npm-debug.log*
+    - yarn-debug.log*
+    - yarn-error.log*
+
+  flutter:
+    - .dart_tool/
+    - .flutter-plugins
+    - .flutter-plugins-dependencies
+    - .packages
+    - build/
+
+  bash:
+    - .env
+    - "*.swp"
+    - "*.swo"
+
+```
