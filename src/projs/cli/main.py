@@ -16,7 +16,7 @@ import yaml
 from projs.config import ConfigManager
 from projs.manifest import ManifestStore, DraftStore
 from projs._setup import initialize_projs, _DATA_DIR
-from projs.cli.prompts import PromptHelper
+from projs.cli.prompts import PromptHelper, UserCancelled
 from projs.cli.menu_builder import MenuBuilder
 from projs.cli.creator import ProjectCreator
 from projs.cli.launcher import ProjectLauncher
@@ -66,10 +66,13 @@ class ProjectsApp:
                 if len(drafts) == 1:
                     idx = 0
                 else:
-                    idx = self.prompt.choice(
-                        "Resume which draft",
-                        [d.display_name() for d in drafts],
-                    )
+                    try:
+                        idx = self.prompt.choice(
+                            "Resume which draft",
+                            [d.display_name() for d in drafts],
+                        )
+                    except UserCancelled:
+                        return
                 creator = ProjectCreator(
                     self.config, self.manifest_store, self.prompt
                 )
@@ -80,10 +83,13 @@ class ProjectsApp:
                 if len(drafts) == 1:
                     idx = 0
                 else:
-                    idx = self.prompt.choice(
-                        "Discard which draft",
-                        [d.display_name() for d in drafts],
-                    )
+                    try:
+                        idx = self.prompt.choice(
+                            "Discard which draft",
+                            [d.display_name() for d in drafts],
+                        )
+                    except UserCancelled:
+                        return
                 self.draft_store.discard(drafts[idx])
                 print(f"  Draft discarded: {drafts[idx].display_name()}")
                 input("\nPress Enter to continue...")
@@ -172,7 +178,10 @@ class ProjectsApp:
 
         print("\nSelect a project to launch:")
         options = [f"{m.name} ({m.language})" for m in manifests]
-        choice_idx = self.prompt.choice("Project", options)
+        try:
+            choice_idx = self.prompt.choice("Project", options)
+        except UserCancelled:
+            return
 
         selected = manifests[choice_idx]
         launcher = ProjectLauncher(self.config, selected, self.prompt)
@@ -189,7 +198,10 @@ class ProjectsApp:
 
         print("\nSelect a project to modify:")
         options = [f"{m.name} ({m.language})" for m in manifests]
-        choice_idx = self.prompt.choice("Project", options)
+        try:
+            choice_idx = self.prompt.choice("Project", options)
+        except UserCancelled:
+            return
 
         selected = manifests[choice_idx]
         modifier = ProjectModifier(self.config, self.manifest_store, selected, self.prompt)
@@ -208,7 +220,10 @@ class ProjectsApp:
 
         print("\nSelect a project to delete:")
         options = [f"{m.name} ({m.language})" for m in manifests]
-        choice_idx = self.prompt.choice("Project", options)
+        try:
+            choice_idx = self.prompt.choice("Project", options)
+        except UserCancelled:
+            return
         selected = manifests[choice_idx]
 
         print(f"\nYou are about to delete '{selected.name}'.")

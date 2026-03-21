@@ -11,6 +11,8 @@ Supports token substitution in display strings:
 
 from typing import List
 
+from projs.cli.prompts import PromptHelper, UserCancelled
+
 
 class MenuItem:
     """Represents a single menu item."""
@@ -39,11 +41,14 @@ class MenuBuilder:
         """
         Display a menu from menus.yaml and return the selected item ID.
 
+        'q' at the selection prompt always returns "back", regardless of
+        whether the menu definition includes a back/quit item.
+
         Args:
             menu_name: Key in menus.yaml (e.g., "main_menu", "settings_menu")
 
         Returns:
-            str: The 'id' of the selected menu item
+            str: The 'id' of the selected menu item, or "back" if cancelled.
         """
         if menu_name not in self.config.menus:
             print(f"Error: Menu '{menu_name}' not found in menus.yaml")
@@ -63,8 +68,11 @@ class MenuBuilder:
             for item in items_data
         ]
 
-        idx = self.prompt.choice(title, items)
-        return items[idx].item_id
+        try:
+            idx = self.prompt.choice(title, items)
+            return items[idx].item_id
+        except UserCancelled:
+            return "back"
 
     def _resolve_display(self, display: str) -> str:
         """
