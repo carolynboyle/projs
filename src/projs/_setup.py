@@ -91,6 +91,18 @@ def prompt_editor(config_dir: Path) -> str:
             print("Please enter a number.")
 
 
+def prompt_author() -> str:
+    """Prompt for the author name used in generated LICENSE files."""
+    print("\n-- Author name for LICENSE files --")
+    print("This will be used in the copyright line of generated LICENSE files.")
+    print("Example: Jane Smith")
+    while True:
+        author = input("Author name: ").strip()
+        if author:
+            return author
+        print("Author name cannot be empty.")
+
+
 def copy_defaults(root: Path) -> None:
     """
     Copy shipped data files into ~/.projects/ on first run.
@@ -132,7 +144,7 @@ def copy_defaults(root: Path) -> None:
                 print(f"✗ Error copying {src_file}: {e}", file=sys.stderr)
 
 
-def create_system_yaml(root: Path, editor: str, pkg_mgr: str) -> None:
+def create_system_yaml(root: Path, editor: str, pkg_mgr: str, author: str) -> None:
     """
     Write ~/.projects/system.yaml with detected/prompted values.
 
@@ -149,12 +161,14 @@ def create_system_yaml(root: Path, editor: str, pkg_mgr: str) -> None:
 
     data["editor"] = editor
     data["package_manager"] = pkg_mgr
+    data["author"] = author
 
     try:
         system_file.write_text(yaml.dump(data, default_flow_style=False))
         print(f"✓ Created {system_file}")
         print(f"  Editor: {editor}")
         print(f"  Package manager: {pkg_mgr}")
+        print(f"  Author: {author}")
     except Exception as e:
         print(f"✗ Error writing system.yaml: {e}", file=sys.stderr)
 
@@ -179,11 +193,12 @@ def initialize_projs() -> None:
     # Auto-detect package manager
     pkg_mgr = detect_package_manager()
 
-    # Prompt for editor
+    # Prompt for editor and author
     editor = prompt_editor(root / "config")
+    author = prompt_author()
 
     # Write system.yaml with real values
-    create_system_yaml(root, editor, pkg_mgr)
+    create_system_yaml(root, editor, pkg_mgr, author)
 
     print(f"\n✓ projs initialized at {root}")
     print(f"  Edit {root / 'system.yaml'} to customize your preferences")

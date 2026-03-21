@@ -249,7 +249,9 @@ class ProjectsApp:
             os.system("clear")
             choice = self.menu_builder.display_menu("settings_menu")
 
-            if choice == "edit_editor":
+            if choice == "edit_author":
+                self._edit_author()
+            elif choice == "edit_editor":
                 self._edit_editor()
             elif choice == "edit_package_manager":
                 self._edit_package_manager()
@@ -259,6 +261,17 @@ class ProjectsApp:
                 self._reset_defaults()
             elif choice == "back":
                 break
+
+    def _edit_author(self):
+        """Edit the author name used in LICENSE files."""
+        print("\n-- Edit Author Name --")
+        print(f"Current: {self.config.get_author() or 'not set'}")
+        author = self.prompt.text("Author name").strip()
+        if not author:
+            return
+        self.config.set_author(author)
+        print(f"✓ Author updated to: {author}")
+        input("\nPress Enter to continue...")
 
     def _edit_editor(self):
         """Edit the preferred editor using the editor menu."""

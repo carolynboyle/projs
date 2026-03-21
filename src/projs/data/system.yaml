@@ -8,6 +8,7 @@
 
 editor: ""              # prompted on first run
 package_manager: unknown  # auto-detected on first run from platforms.yaml
+author: ""              # prompted on first run — used in LICENSE files
 
 launch_mode: standard   # standard | debug
                         # standard — fire commands and attach tmux immediately

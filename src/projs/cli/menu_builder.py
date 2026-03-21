@@ -83,6 +83,7 @@ class MenuBuilder:
           {package_manager} — config.get_package_manager()
         """
         tokens = {
+            "author": self.config.get_author() or "not set",
             "editor": self.config.get_editor() or "not set",
             "package_manager": self.config.get_package_manager(),
         }
