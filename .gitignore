@@ -2,8 +2,6 @@
 __pycache__/
 *.pyc
 .env
-archive/
+dist/
+build/
 *.egg-info/
-tree
-.scratch
-.doc-gen/

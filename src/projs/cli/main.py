@@ -14,7 +14,7 @@ import pydoc
 import yaml
 
 from projs.config import ConfigManager
-from projs.manifest import ManifestStore
+from projs.manifest import ManifestStore, DraftStore
 from projs._setup import initialize_projs, _DATA_DIR
 from projs.cli.prompts import PromptHelper
 from projs.cli.menu_builder import MenuBuilder
@@ -30,6 +30,7 @@ class ProjectsApp:
         self.config = ConfigManager()
         self._check_first_run()
         self.manifest_store = ManifestStore(self.config)
+        self.draft_store = DraftStore(self.config)
         self.prompt = PromptHelper()
         self.menu_builder = MenuBuilder(self.config, self.prompt)
 
@@ -40,8 +41,60 @@ class ProjectsApp:
             initialize_projs()
             self.config = ConfigManager()
 
+    def _check_pending_drafts(self):
+        """On startup, offer to resume or discard any saved drafts."""
+        drafts = self.draft_store.list_all()
+        if not drafts:
+            return
+
+        print(f"\n{'=' * 50}")
+        print(f"  {len(drafts)} unfinished draft(s) found:")
+        print(f"{'=' * 50}")
+        for i, draft in enumerate(drafts, 1):
+            print(f"  {i}. {draft.display_name()}")
+
+        print("\nOptions:")
+        print("  r — resume a draft")
+        print("  d — discard a draft")
+        print("  s — skip (handle later)")
+
+        while True:
+            choice = input("\nChoice [r/d/s]: ").strip().lower()
+            if choice == "s":
+                return
+            elif choice == "r":
+                if len(drafts) == 1:
+                    idx = 0
+                else:
+                    idx = self.prompt.choice(
+                        "Resume which draft",
+                        [d.display_name() for d in drafts],
+                    )
+                creator = ProjectCreator(
+                    self.config, self.manifest_store, self.prompt
+                )
+                creator.resume(drafts[idx])
+                input("\nPress Enter to continue...")
+                return
+            elif choice == "d":
+                if len(drafts) == 1:
+                    idx = 0
+                else:
+                    idx = self.prompt.choice(
+                        "Discard which draft",
+                        [d.display_name() for d in drafts],
+                    )
+                self.draft_store.discard(drafts[idx])
+                print(f"  Draft discarded: {drafts[idx].display_name()}")
+                input("\nPress Enter to continue...")
+                return
+            else:
+                print("Please enter r, d, or s.")
+
     def main_menu(self):
         """Main menu loop."""
+        self._check_pending_drafts()
+
         while True:
             os.system("clear")
             choice = self.menu_builder.display_menu("main_menu")
@@ -50,6 +103,8 @@ class ProjectsApp:
                 self.list_projects()
             elif choice == "create_project":
                 self.create_project()
+            elif choice == "import_project":
+                self.import_project()
             elif choice == "launch_project":
                 self.launch_project()
             elif choice == "modify_project":
@@ -76,32 +131,34 @@ class ProjectsApp:
             input("Press Enter to continue...")
             return
 
-        print("\n" + "=" * 50)
-        print("Projects:")
-        print("=" * 50)
+        lines = []
+        lines.append("=" * 50)
+        lines.append("Projects:")
+        lines.append("=" * 50)
         for i, manifest in enumerate(manifests, 1):
-            print(f"\n{i}. {manifest.name}")
-            print(f"   Language:    {manifest.language}")
-            print(f"   License:     {manifest.license}")
-            print(f"   Path:        {manifest.path}")
-            print(f"   Description: {manifest.description}")
-            print("   Commands:")
-            print(f"     [  0] cd {manifest.expanded_path()}  (automatic)")
+            lines.append(f"\n{i}. {manifest.name}")
+            lines.append(f"   Language:    {manifest.language}")
+            lines.append(f"   License:     {manifest.license}")
+            lines.append(f"   Path:        {manifest.path}")
+            lines.append(f"   Description: {manifest.description}")
+            lines.append("   Commands:")
+            lines.append(f"     [  0] cd {manifest.expanded_path()}  (automatic)")
             for cmd in manifest.sorted_commands():
                 desc = f"  # {cmd.description}" if cmd.description else ""
-                print(f"     [{cmd.seq:>3}] {cmd.command}{desc}")
+                lines.append(f"     [{cmd.seq:>3}] {cmd.command}{desc}")
 
-        input("\nPress Enter to continue...")
+        pydoc.pager("\n".join(lines))
 
     def create_project(self):
         """Create a new project (interactive flow)."""
-        print("\n" + "=" * 50)
-        print("Create New Project")
-        print("=" * 50)
-
         creator = ProjectCreator(self.config, self.manifest_store, self.prompt)
         creator.run()
+        input("\nPress Enter to continue...")
 
+    def import_project(self):
+        """Import an existing project directory."""
+        creator = ProjectCreator(self.config, self.manifest_store, self.prompt)
+        creator.run_import()
         input("\nPress Enter to continue...")
 
     def launch_project(self):
@@ -349,7 +406,7 @@ def cli():
     parser.add_argument(
         "command",
         nargs="?",
-        help="Command: 'new', 'launch <name>', 'list', or leave blank for interactive menu"
+        help="Command: 'new', 'import', 'launch <n>', 'list', or leave blank for interactive menu"
     )
     parser.add_argument(
         "args",
@@ -368,6 +425,8 @@ def cli():
         app.list_projects()
     elif parsed.command == "new":
         app.create_project()
+    elif parsed.command == "import":
+        app.import_project()
     elif parsed.command == "launch" and parsed.args:
         project_name = parsed.args[0]
         manifest = app.manifest_store.load(project_name)
