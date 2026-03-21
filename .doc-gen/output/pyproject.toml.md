@@ -2,7 +2,7 @@
 
 **Path:** pyproject.toml
 **Syntax:** toml
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```toml
 [build-system]
@@ -42,16 +42,17 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages]
 find = {where = ["src"]}
 
+[tool.pylint.format]
+max-line-length = 120
+
+
 [tool.setuptools.package-data]
 projs = [
     "data/*.yaml",
     "data/*.json",
     "data/language-actions/*.yaml",
+    "data/licenses/*.txt",         # ← add this
     "data/themes/**/*.yaml",
     "data/themes/**/*.png",
 ]
-
-[tool.pylint.format]
-max-line-length = 120
-
 ```

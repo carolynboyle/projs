@@ -2,7 +2,7 @@
 
 **Path:** src/projs/config.py
 **Syntax:** python
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```python
 """
@@ -122,6 +122,10 @@ class ConfigManager:
         """Get launch mode: 'standard' or 'debug'."""
         return self.system.get("launch_mode", "standard")
 
+    def get_author(self) -> str:
+        """Get author name for LICENSE files."""
+        return self.system.get("author", "")
+
     def set_editor(self, editor: str) -> None:
         """Save editor preference to system.yaml."""
         self.system["editor"] = editor
@@ -132,6 +136,11 @@ class ConfigManager:
         self.system["launch_mode"] = mode
         self.save_system(self.system)
 
+    def set_author(self, author: str) -> None:
+        """Save author name to system.yaml."""
+        self.system["author"] = author
+        self.save_system(self.system)
+
     def get_package_manager(self) -> str:
         """Get package manager."""
         return self.system.get("package_manager", "unknown")
@@ -139,6 +148,21 @@ class ConfigManager:
     def get_preference(self, key: str, default: Any = None) -> Any:
         """Get a preference value."""
         return self.system.get("preferences", {}).get(key, default)
+
+    def get_license_template(self, license_id: str) -> Optional[str]:
+        """
+        Load a license template from data/licenses/.
+
+        Returns the template text with {year} and {author} placeholders,
+        or None if no template exists for the given license id.
+        """
+        template_path = _DATA_DIR / "licenses" / f"{license_id}.txt"
+        if template_path.exists():
+            try:
+                return template_path.read_text()
+            except OSError as e:
+                print(f"Warning: could not load license template {template_path}: {e}")
+        return None
 
     # -- Path helpers ---------------------------------------------------------
 

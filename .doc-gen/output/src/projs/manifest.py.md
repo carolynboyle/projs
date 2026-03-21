@@ -2,7 +2,7 @@
 
 **Path:** src/projs/manifest.py
 **Syntax:** python
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```python
 """
@@ -220,6 +220,12 @@ class ProjectDraft:
             "create_readme": self.create_readme,
             "create_docs": self.create_docs,
         }
+
+    def expanded_path(self) -> Path:
+        """Return path with ~ expanded to home directory, or None if path not set."""
+        if not self.path:
+            return None
+        return Path(self.path).expanduser()
 
     def is_complete(self) -> bool:
         """Return True if all required fields are populated."""

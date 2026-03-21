@@ -2,7 +2,7 @@
 
 **Path:** src/projs/cli/prompts.py
 **Syntax:** python
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```python
 """
@@ -12,9 +12,13 @@ projs.prompts - Interactive prompt helpers
 from typing import List
 
 
+class UserCancelled(Exception):
+    """Raised when the user types 'q' at a menu selection prompt."""
+
+
 class PromptHelper:
     """Simple, homegrown prompt helpers (no external dependencies)."""
-    
+
     @staticmethod
     def text(prompt: str, default: str = "") -> str:
         """Prompt for text input."""
@@ -22,10 +26,10 @@ class PromptHelper:
         if default:
             full_prompt += f" [{default}]"
         full_prompt += ": "
-        
+
         result = input(full_prompt).strip()
         return result if result else default
-    
+
     @staticmethod
     def yes_no(prompt: str, default: bool = False) -> bool:
         """Prompt for yes/no."""
@@ -39,49 +43,65 @@ class PromptHelper:
             elif not result:
                 return default
             print("Please answer 'y' or 'n'.")
-    
+
     @staticmethod
     def choice(prompt: str, options: List[str]) -> int:
-        """Prompt for single selection from list (returns 0-indexed)."""
+        """
+        Prompt for single selection from list.
+
+        Returns 0-indexed int on success.
+        Raises UserCancelled if the user enters 'q'.
+        """
         print(f"\n{prompt}")
         for i, option in enumerate(options, 1):
-            print(f"{i}. {option}")
-        
+            print(f"  {i}. {option}")
+        print("  q. Cancel")
+
         while True:
+            raw = input("Selection: ").strip().lower()
+            if raw == "q":
+                raise UserCancelled
             try:
-                result = int(input("Selection: ").strip())
+                result = int(raw)
                 if 1 <= result <= len(options):
                     return result - 1
-                print(f"Please select 1-{len(options)}.")
+                print(f"Please select 1-{len(options)}, or q to cancel.")
             except ValueError:
-                print("Please enter a number.")
-    
+                print(f"Please enter a number or q to cancel.")
+
     @staticmethod
     def multi_choice(prompt: str, options: List[str]) -> List[int]:
-        """Prompt for multiple selections (returns 0-indexed list)."""
+        """
+        Prompt for multiple selections.
+
+        Returns 0-indexed list on success.
+        Raises UserCancelled if the user enters 'q'.
+        """
         import os
         selected = [False] * len(options)
-        
+
         while True:
             os.system("clear")
             print(f"\n{prompt}")
             for i, option in enumerate(options):
                 marker = "[x]" if selected[i] else "[ ]"
-                print(f"{i+1}. {marker} {option}")
-            
-            print("\nEnter number to toggle, or 'done' to finish:")
-            result = input("> ").strip().lower()
-            
-            if result == "done":
+                print(f"  {i+1}. {marker} {option}")
+
+            print("\n  Enter number to toggle, 'done' to confirm, or q to cancel:")
+            raw = input("> ").strip().lower()
+
+            if raw == "q":
+                raise UserCancelled
+            elif raw == "done":
                 return [i for i, s in enumerate(selected) if s]
-            
-            try:
-                idx = int(result) - 1
-                if 0 <= idx < len(options):
-                    selected[idx] = not selected[idx]
-                else:
-                    print(f"Please select 1-{len(options)}.")
-            except ValueError:
-                print("Please enter a number or 'done'.")
+            else:
+                try:
+                    idx = int(raw) - 1
+                    if 0 <= idx < len(options):
+                        selected[idx] = not selected[idx]
+                    else:
+                        print(f"Please select 1-{len(options)}.")
+                except ValueError:
+                    print("Please enter a number, 'done', or q.")
 
 ```

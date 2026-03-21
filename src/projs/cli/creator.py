@@ -144,7 +144,7 @@ class ProjectCreator:
             # Step 6 — commands
             if start_step <= 6:
                 draft.step = 6
-                draft.commands = self._prompt_commands()
+                draft.commands = self._prompt_commands(is_import=draft.is_import)
                 self.draft_store.save(draft)
 
             # Step 7 — options (README, docs)
@@ -378,7 +378,7 @@ class ProjectCreator:
 
         return create_readme, create_docs
 
-    def _prompt_commands(self) -> List[ManifestCommand]:
+    def _prompt_commands(self, is_import: bool = False) -> List[ManifestCommand]:
         """Prompt for commands to associate with project."""
         commands = []
 
@@ -418,6 +418,14 @@ class ProjectCreator:
         # Command library loop
         while True:
             all_cmds = self.command_library.get_all()
+
+            # Filter out create_only commands when importing
+            if is_import:
+                all_cmds = [
+                    cmd for cmd in all_cmds
+                    if "create_only" not in cmd.get("tags", [])
+                ]
+
             if not all_cmds:
                 print("No commands available in library.")
                 break
@@ -466,6 +474,7 @@ class ProjectCreator:
                 print(f"✓ Added: [{seq}] {name}")
 
         return commands
+
 
     # ------------------------------------------------------------------
     # Dry-run display

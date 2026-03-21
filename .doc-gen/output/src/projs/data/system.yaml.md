@@ -2,7 +2,7 @@
 
 **Path:** src/projs/data/system.yaml
 **Syntax:** yaml
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```yaml
 # Default system configuration
@@ -15,6 +15,7 @@
 
 editor: ""              # prompted on first run
 package_manager: unknown  # auto-detected on first run from platforms.yaml
+author: ""              # prompted on first run — used in LICENSE files
 
 launch_mode: standard   # standard | debug
                         # standard — fire commands and attach tmux immediately

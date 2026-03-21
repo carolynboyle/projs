@@ -2,7 +2,7 @@
 
 **Path:** src/projs/data/commands.json
 **Syntax:** json
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```json
 {
@@ -25,8 +25,10 @@
     {
       "id": "git_commit",
       "name": "Initial commit",
-      "command": "git add . && git commit -m \"Initial project scaffold\""
+      "command": "git add . && git commit -m \"Initial project scaffold\"",
+      "tags": ["create_only"]
     }
   ]
 }
+
 ```

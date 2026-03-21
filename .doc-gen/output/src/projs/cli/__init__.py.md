@@ -2,7 +2,7 @@
 
 **Path:** src/projs/cli/__init__.py
 **Syntax:** python
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```python
 """projs.cli - Command-line interface for projs."""

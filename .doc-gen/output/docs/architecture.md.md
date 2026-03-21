@@ -2,7 +2,7 @@
 
 **Path:** docs/architecture.md
 **Syntax:** markdown
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```markdown
 projs/

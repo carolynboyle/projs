@@ -2,7 +2,7 @@
 
 **Path:** src/projs/cli/creator.py
 **Syntax:** python
-**Generated:** 2026-03-19 14:56:23
+**Generated:** 2026-03-21 11:14:03
 
 ```python
 """
@@ -13,8 +13,8 @@ Separation of concerns
   Gathering   _prompt_*() methods collect data from the user and update
               the draft after each step via DraftStore.save().
 
-  Execution   execute() does all disk work — mkdir, README, docs/, gitignore
-              file — then promotes the draft to a permanent manifest.
+  Execution   execute() does all disk work — mkdir, README, docs/, gitignore,
+              LICENSE — then promotes the draft to a permanent manifest.
 
   Entry points
     run()         — interactive new project (CLI)
@@ -23,7 +23,7 @@ Separation of concerns
     execute(draft)— shared backend; called by CLI and GUI alike
 """
 
-import json
+from datetime import datetime
 from typing import List, Optional
 
 from projs.config import ConfigManager
@@ -36,7 +36,7 @@ from projs.manifest import (
 )
 from projs.commands import CommandLibrary
 from projs.language_actions import LanguageActions
-from projs.cli.prompts import PromptHelper
+from projs.cli.prompts import PromptHelper, UserCancelled
 from projs.cli.menu_builder import MenuBuilder
 
 
@@ -92,71 +92,98 @@ class ProjectCreator:
 
     def _gather(self, draft: ProjectDraft, start_step: int = 0):
         """Run through all gathering steps, saving draft after each."""
+        try:
+            # Step 0 — name
+            if start_step <= 0:
+                draft.step = 0
+                if draft.is_import:
+                    draft.name = self._prompt_name_import()
+                else:
+                    draft.name = self._prompt_name_new()
+                self.draft_store.save(draft)
 
-        # Step 0 — name
-        if start_step <= 0:
-            draft.step = 0
-            if draft.is_import:
-                draft.name = self._prompt_name_import()
+            # Step 1 — description
+            if start_step <= 1:
+                draft.step = 1
+                current = f" [{draft.description}]" if draft.description else ""
+                draft.description = self.prompt.text(
+                    f"Project description{current}"
+                ).strip() or draft.description or ""
+                self.draft_store.save(draft)
+
+            # Step 2 — path
+            if start_step <= 2:
+                draft.step = 2
+                draft.path = self._prompt_path(draft)
+                self.draft_store.save(draft)
+
+            # Step 3 — language
+            if start_step <= 3:
+                draft.step = 3
+                draft.language = self._prompt_language()
+                self.draft_store.save(draft)
+
+            # Step 4 — license
+            # Import: skip entirely if LICENSE file already exists.
+            if start_step <= 4:
+                draft.step = 4
+                if draft.is_import:
+                    project_path = draft.expanded_path()
+                    if (project_path / "LICENSE").exists():
+                        print("  ✓ LICENSE already exists — skipping.")
+                        draft.license = "existing"
+                    else:
+                        draft.license = self._prompt_license()
+                else:
+                    draft.license = self._prompt_license()
+                self.draft_store.save(draft)
+
+            # Step 5 — gitignore
+            # Import: skip if .gitignore exists; offer full prompt if missing.
+            if start_step <= 5:
+                draft.step = 5
+                if draft.is_import:
+                    draft.gitignore = self._prompt_gitignore_import(draft)
+                else:
+                    draft.gitignore = self._prompt_gitignore(draft.language)
+                self.draft_store.save(draft)
+
+            # Step 6 — commands
+            if start_step <= 6:
+                draft.step = 6
+                draft.commands = self._prompt_commands(is_import=draft.is_import)
+                self.draft_store.save(draft)
+
+            # Step 7 — options (README, docs)
+            # Import: only offer each item if it's absent from the directory.
+            if start_step <= 7:
+                draft.step = 7
+                if draft.is_import:
+                    draft.create_readme, draft.create_docs = (
+                        self._prompt_scaffold_import(draft)
+                    )
+                else:
+                    draft.create_readme = self.prompt.yes_no(
+                        "Create README.md?", default=True
+                    )
+                    draft.create_docs = self.prompt.yes_no(
+                        "Create docs/ directory?", default=False
+                    )
+                self.draft_store.save(draft)
+
+            # Dry-run and confirm
+            if self._show_dryrun(draft):
+                self.execute(draft)
             else:
-                draft.name = self._prompt_name_new()
-            self.draft_store.save(draft)
+                print("\nProject creation cancelled.")
+                if self.prompt.yes_no("Keep draft for later?", default=True):
+                    print(f"  Draft saved: {draft.display_name()}")
+                else:
+                    self.draft_store.discard(draft)
+                    print("  Draft discarded.")
 
-        # Step 1 — description
-        if start_step <= 1:
-            draft.step = 1
-            current = f" [{draft.description}]" if draft.description else ""
-            draft.description = self.prompt.text(
-                f"Project description{current}"
-            ).strip() or draft.description or ""
-            self.draft_store.save(draft)
-
-        # Step 2 — path
-        if start_step <= 2:
-            draft.step = 2
-            draft.path = self._prompt_path(draft)
-            self.draft_store.save(draft)
-
-        # Step 3 — language
-        if start_step <= 3:
-            draft.step = 3
-            draft.language = self._prompt_language()
-            self.draft_store.save(draft)
-
-        # Step 4 — license
-        if start_step <= 4:
-            draft.step = 4
-            draft.license = self._prompt_license()
-            self.draft_store.save(draft)
-
-        # Step 5 — gitignore
-        if start_step <= 5:
-            draft.step = 5
-            draft.gitignore = self._prompt_gitignore(draft.language)
-            self.draft_store.save(draft)
-
-        # Step 6 — commands
-        if start_step <= 6:
-            draft.step = 6
-            draft.commands = self._prompt_commands()
-            self.draft_store.save(draft)
-
-        # Step 7 — options (README, docs)
-        if start_step <= 7:
-            draft.step = 7
-            draft.create_readme = self.prompt.yes_no(
-                "Create README.md?", default=True
-            )
-            draft.create_docs = self.prompt.yes_no(
-                "Create docs/ directory?", default=False
-            )
-            self.draft_store.save(draft)
-
-        # Dry-run and confirm
-        if self._show_dryrun(draft):
-            self.execute(draft)
-        else:
-            print("\nProject creation cancelled.")
+        except UserCancelled:
+            print("\nCancelled.")
             if self.prompt.yes_no("Keep draft for later?", default=True):
                 print(f"  Draft saved: {draft.display_name()}")
             else:
@@ -175,9 +202,10 @@ class ProjectCreator:
         -----
           1. Create project directory (skipped for imports)
           2. Write .gitignore if entries exist
-          3. Create README.md if requested
-          4. Create docs/ directory if requested
-          5. Promote draft → manifest (saves manifest, deletes draft)
+          3. Write LICENSE from template if license is set and not "existing"
+          4. Create README.md if requested
+          5. Create docs/ directory if requested
+          6. Promote draft → manifest (saves manifest, deletes draft)
 
         Returns the new ProjectManifest, or None if execution failed.
         """
@@ -196,6 +224,9 @@ class ProjectCreator:
                 gitignore_path = project_path / ".gitignore"
                 gitignore_path.write_text("\n".join(draft.gitignore) + "\n")
                 print("✓ Created .gitignore")
+
+            if draft.license and draft.license != "existing":
+                self._write_license(project_path, draft.license)
 
             if draft.create_readme:
                 readme_path = project_path / "README.md"
@@ -219,6 +250,21 @@ class ProjectCreator:
         print(f"  Directory: {project_path}")
         print(f"  Manifest:  ~/.projects/manifests/{manifest.name}.json")
         return manifest
+
+    def _write_license(self, project_path, license_id: str) -> None:
+        """Write a LICENSE file from the shipped template for the given license."""
+        template = self.config.get_license_template(license_id)
+        if template is None:
+            print(f"  Note: no template found for '{license_id}' — LICENSE not written.")
+            return
+
+        author = self.config.get_author() or "Unknown"
+        year = str(datetime.now().year)
+        content = template.format(year=year, author=author)
+
+        license_path = project_path / "LICENSE"
+        license_path.write_text(content)
+        print(f"✓ Created LICENSE ({license_id})")
 
     # ------------------------------------------------------------------
     # Prompts
@@ -264,7 +310,7 @@ class ProjectCreator:
             return raw or default
 
     def _prompt_language(self) -> str:
-        """Prompt for programming language."""
+        """Prompt for programming language. Raises UserCancelled if user quits."""
         languages = self.config.get_languages()
         idx = self.prompt.choice("Select language", languages)
         if idx == len(languages) - 1:  # "other"
@@ -272,7 +318,7 @@ class ProjectCreator:
         return languages[idx]
 
     def _prompt_license(self) -> str:
-        """Prompt for license type."""
+        """Prompt for license type. Raises UserCancelled if user quits."""
         licenses = self.config.get_licenses()
         idx = self.prompt.choice("Select license", licenses)
         if idx == len(licenses) - 1:  # "Custom/Other"
@@ -301,7 +347,45 @@ class ProjectCreator:
 
         return entries
 
-    def _prompt_commands(self) -> List[ManifestCommand]:
+    def _prompt_gitignore_import(self, draft: ProjectDraft) -> List[str]:
+        """
+        Import variant: skip if .gitignore exists; run full prompt if missing.
+        """
+        project_path = draft.expanded_path()
+        if (project_path / ".gitignore").exists():
+            print("  ✓ .gitignore already exists — skipping.")
+            return []
+        print("\n  No .gitignore found.")
+        if self.prompt.yes_no("Create .gitignore?", default=True):
+            return self._prompt_gitignore(draft.language)
+        return []
+
+    def _prompt_scaffold_import(self, draft: ProjectDraft):
+        """
+        Import variant for README and docs/.
+
+        Scans the project directory and only prompts for items that are absent.
+        Returns (create_readme, create_docs).
+        """
+        project_path = draft.expanded_path()
+
+        if (project_path / "README.md").exists():
+            print("  ✓ README.md already exists — skipping.")
+            create_readme = False
+        else:
+            print("\n  No README.md found.")
+            create_readme = self.prompt.yes_no("Create README.md?", default=True)
+
+        if (project_path / "docs").exists():
+            print("  ✓ docs/ already exists — skipping.")
+            create_docs = False
+        else:
+            print("\n  No docs/ directory found.")
+            create_docs = self.prompt.yes_no("Create docs/ directory?", default=False)
+
+        return create_readme, create_docs
+
+    def _prompt_commands(self, is_import: bool = False) -> List[ManifestCommand]:
         """Prompt for commands to associate with project."""
         commands = []
 
@@ -341,6 +425,14 @@ class ProjectCreator:
         # Command library loop
         while True:
             all_cmds = self.command_library.get_all()
+
+            # Filter out create_only commands when importing
+            if is_import:
+                all_cmds = [
+                    cmd for cmd in all_cmds
+                    if "create_only" not in cmd.get("tags", [])
+                ]
+
             if not all_cmds:
                 print("No commands available in library.")
                 break
@@ -389,6 +481,7 @@ class ProjectCreator:
                 print(f"✓ Added: [{seq}] {name}")
 
         return commands
+
 
     # ------------------------------------------------------------------
     # Dry-run display

@@ -1,6 +1,6 @@
-# Generated: 2026-03-21 11:13:55
+# Generated: 2026-03-19 14:56:11
 # Project: /home/carolyn/projects/projs
-# Files: 62
+# Files: 60
 
 version: 1
 documents:
@@ -8,6 +8,7 @@ documents:
 - path: .gitignore
 - path: README.md
 - path: docs/architecture.md
+- path: docs/config_changes.txt
 - path: docs/fstree2026nar17.md
 - path: docs/images/projs_architecture.svg.png
 - path: docs/images/projs_gui_mockup.html
@@ -17,6 +18,9 @@ documents:
 - path: licenses/Apache-2.0.txt
 - path: licenses/GPL-v3.txt
 - path: licenses/MIT.txt
+- path: projs-report.txt
+- path: projs.txt
+- path: projstree.txt
 - path: pyproject.toml
 - path: src/projs/__init__.py
 - path: src/projs/_setup.py
@@ -32,14 +36,8 @@ documents:
 - path: src/projs/data/commands.json
 - path: src/projs/data/defaults.yaml
 - path: src/projs/data/language-actions.yaml
-- path: src/projs/data/licenses/Apache-2.0.txt
-- path: src/projs/data/licenses/BSD-3-Clause.txt
-- path: src/projs/data/licenses/GPL-3.0.txt
-- path: src/projs/data/licenses/ISC.txt
-- path: src/projs/data/licenses/MIT.txt
 - path: src/projs/data/menus.yaml
 - path: src/projs/data/platforms.yaml
-- path: src/projs/data/plugins.yaml
 - path: src/projs/data/python.yaml
 - path: src/projs/data/system.yaml
 - path: src/projs/data/themes/apple_iic/theme.yaml

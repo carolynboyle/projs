@@ -1,13 +1,13 @@
-# Generated: 2026-03-20 13:30:11
+# Generated: 2026-03-21 07:25:04
 # Repo: https://github.com/carolynboyle/projs
 # Branch: master
 # URL type: raw
-# Files: 60
+# Files: 62
 
 repo: https://github.com/carolynboyle/projs
 branch: master
 url_type: raw
-generated: '2026-03-20 13:30:11'
+generated: '2026-03-21 07:25:04'
 files:
 - path: .editorconfig
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/.editorconfig
@@ -17,8 +17,6 @@ files:
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/README.md
 - path: docs/architecture.md
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/architecture.md
-- path: docs/config_changes.txt
-  url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/config_changes.txt
 - path: docs/fstree2026nar17.md
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/fstree2026nar17.md
 - path: docs/images/projs_architecture.svg.png
@@ -37,12 +35,6 @@ files:
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/licenses/GPL-v3.txt
 - path: licenses/MIT.txt
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/licenses/MIT.txt
-- path: projs-report.txt
-  url: https://raw.githubusercontent.com/carolynboyle/projs/master/projs-report.txt
-- path: projs.txt
-  url: https://raw.githubusercontent.com/carolynboyle/projs/master/projs.txt
-- path: projstree.txt
-  url: https://raw.githubusercontent.com/carolynboyle/projs/master/projstree.txt
 - path: pyproject.toml
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/pyproject.toml
 - path: src/projs/__init__.py
@@ -73,10 +65,22 @@ files:
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/defaults.yaml
 - path: src/projs/data/language-actions.yaml
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/language-actions.yaml
+- path: src/projs/data/licenses/Apache-2.0.txt
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/licenses/Apache-2.0.txt
+- path: src/projs/data/licenses/BSD-3-Clause.txt
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/licenses/BSD-3-Clause.txt
+- path: src/projs/data/licenses/GPL-3.0.txt
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/licenses/GPL-3.0.txt
+- path: src/projs/data/licenses/ISC.txt
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/licenses/ISC.txt
+- path: src/projs/data/licenses/MIT.txt
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/licenses/MIT.txt
 - path: src/projs/data/menus.yaml
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/menus.yaml
 - path: src/projs/data/platforms.yaml
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/platforms.yaml
+- path: src/projs/data/plugins.yaml
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/plugins.yaml
 - path: src/projs/data/python.yaml
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/data/python.yaml
 - path: src/projs/data/system.yaml
