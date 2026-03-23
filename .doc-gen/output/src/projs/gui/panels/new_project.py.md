@@ -2,7 +2,7 @@
 
 **Path:** src/projs/gui/panels/new_project.py
 **Syntax:** python
-**Generated:** 2026-03-21 11:14:03
+**Generated:** 2026-03-22 18:36:59
 
 ```python
 """

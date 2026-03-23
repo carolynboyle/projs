@@ -1,16 +1,18 @@
-# Generated: 2026-03-21 11:13:55
+# Generated: 2026-03-22 18:36:31
 # Project: /home/carolyn/projects/projs
-# Files: 62
+# Files: 68
 
 version: 1
 documents:
 - path: .editorconfig
 - path: .gitignore
+- path: .scratch/2026mar22-projs_logging_status.md
 - path: README.md
 - path: docs/architecture.md
 - path: docs/fstree2026nar17.md
 - path: docs/images/projs_architecture.svg.png
 - path: docs/images/projs_gui_mockup.html
+- path: docs/images/projs_logging_flowchart.svg
 - path: docs/images/projs_project_creation_flow.svg
 - path: docs/project_rules.md
 - path: docs/yaml/projs_menus_yaml_with_ide.txt
@@ -53,6 +55,10 @@ documents:
 - path: src/projs/gui/shortcuts.py
 - path: src/projs/gui/theme.py
 - path: src/projs/language_actions.py
+- path: src/projs/logging/__init__.py
+- path: src/projs/logging/_foundation.py
+- path: src/projs/logging/_rotation.py
+- path: src/projs/logging/_writers.py
 - path: src/projs/manifest.py
 - path: src/projs/tmux.py
 - path: src/projs.egg-info/PKG-INFO

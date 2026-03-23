@@ -2,7 +2,7 @@
 
 **Path:** docs/images/projs_project_creation_flow.svg
 **Syntax:** text
-**Generated:** 2026-03-21 11:14:03
+**Generated:** 2026-03-22 18:36:59
 
 ```
 <svg width="100%" viewBox="0 0 680 980" xmlns="http://www.w3.org/2000/svg">
