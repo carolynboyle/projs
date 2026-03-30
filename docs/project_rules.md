@@ -17,6 +17,8 @@ These rules exist so that decisions don't have to be re-made every time. When in
 - **Config hierarchy:** shipped `data/` files are the default. User config in `~/.appname/` overrides them. Never the reverse.
 - **Single source of truth.** Any given operation has exactly one canonical implementation. CLI and GUI both call it. Neither owns it.
 - **Identify reusable code early.** If a class or utility could reasonably be used in another project, flag it as a personal library candidate. Don't wait until it's tangled up to notice.
+- **Write code that doesn't make assumptions about OS file io** always specify encoding='utf-8' explicitly in read_text(), open(), and any other file I/O calls. This will save much pain when porting to Windows/Mac?Chrome.
+
 
 ---
 

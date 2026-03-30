@@ -1,0 +1,117 @@
+./
+├── backups/
+├── check-report.txt
+├── config.yml
+├── defaults.yml
+├── .doc-gen/
+│   ├── backups/
+│   ├── defaults.yml
+│   ├── ignore-patterns.txt
+│   ├── manifest.yml
+│   └── output/
+├── ignore-patterns.txt
+├── manifest-backups/
+│   ├── 20260319-144421-manifest.yml
+│   ├── 20260319-145611-manifest.yml
+│   ├── 20260321-072321-manifest.yml
+│   ├── 20260321-111355-manifest.yml
+│   └── 20260322-183631-manifest.yml
+├── manifest.fletch
+├── manifest.yml
+└── output/
+    ├── docs/
+    │   ├── architecture.md.md
+    │   ├── config_changes.txt.md
+    │   ├── fstree2026nar17.md.md
+    │   ├── images/
+    │   │   ├── projs_architecture.svg.png.md
+    │   │   ├── projs_gui_mockup.html.md
+    │   │   ├── projs_logging_flowchart.svg.md
+    │   │   └── projs_project_creation_flow.svg.md
+    │   ├── project_rules.md.md
+    │   └── yaml/
+    │       └── projs_menus_yaml_with_ide.txt.md
+    ├── .editorconfig.md
+    ├── .gitignore.md
+    ├── licenses/
+    │   ├── Apache-2.0.txt.md
+    │   ├── GPL-v3.txt.md
+    │   └── MIT.txt.md
+    ├── project-tree.txt
+    ├── projs-report.txt.md
+    ├── projs-tree.txt
+    ├── projstree.txt.md
+    ├── projs.txt.md
+    ├── pyproject.toml.md
+    ├── README.md.md
+    ├── .scratch/
+    │   └── 2026mar22-projs_logging_status.md.md
+    ├── src/
+    │   ├── projs/
+    │   │   ├── cli/
+    │   │   │   ├── creator.py.md
+    │   │   │   ├── __init__.py.md
+    │   │   │   ├── launcher.py.md
+    │   │   │   ├── main.py.md
+    │   │   │   ├── menu_builder.py.md
+    │   │   │   ├── modifier.py.md
+    │   │   │   └── prompts.py.md
+    │   │   ├── commands.py.md
+    │   │   ├── config.py.md
+    │   │   ├── data/
+    │   │   │   ├── commands.json.md
+    │   │   │   ├── defaults.yaml.md
+    │   │   │   ├── language-actions.yaml.md
+    │   │   │   ├── licenses/
+    │   │   │   │   ├── Apache-2.0.txt.md
+    │   │   │   │   ├── BSD-3-Clause.txt.md
+    │   │   │   │   ├── GPL-3.0.txt.md
+    │   │   │   │   ├── ISC.txt.md
+    │   │   │   │   └── MIT.txt.md
+    │   │   │   ├── menus.yaml.md
+    │   │   │   ├── platforms.yaml.md
+    │   │   │   ├── plugins.yaml.md
+    │   │   │   ├── python.yaml.md
+    │   │   │   ├── system.yaml.md
+    │   │   │   └── themes/
+    │   │   │       ├── apple_iic/
+    │   │   │       │   └── theme.yaml.md
+    │   │   │       └── default/
+    │   │   │           └── theme.yaml.md
+    │   │   ├── gui/
+    │   │   │   ├── app.py.md
+    │   │   │   ├── __init__.py.md
+    │   │   │   ├── panels/
+    │   │   │   │   ├── dashboard.py.md
+    │   │   │   │   ├── __init__.py.md
+    │   │   │   │   ├── new_project.py.md
+    │   │   │   │   └── settings.py.md
+    │   │   │   ├── shortcuts.py.md
+    │   │   │   └── theme.py.md
+    │   │   ├── __init__.py.md
+    │   │   ├── language_actions.py.md
+    │   │   ├── logging/
+    │   │   │   ├── _foundation.py.md
+    │   │   │   ├── __init__.py.md
+    │   │   │   ├── _rotation.py.md
+    │   │   │   └── _writers.py.md
+    │   │   ├── manifest.py.md
+    │   │   ├── _setup.py.md
+    │   │   └── tmux.py.md
+    │   └── projs.egg-info/
+    │       ├── dependency_links.txt.md
+    │       ├── entry_points.txt.md
+    │       ├── PKG-INFO.md
+    │       ├── requires.txt.md
+    │       ├── SOURCES.txt.md
+    │       └── top_level.txt.md
+    ├── systemd/
+    │   └── projs-worker.service.md
+    ├── templates/
+    │   ├── flutter-game.yaml.md
+    │   └── python-basic.yaml.md
+    └── tests/
+        ├── test_commands.py.md
+        └── test_manifest.py.md
+
+27 directories, 88 files

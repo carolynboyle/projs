@@ -1,18 +1,20 @@
-# Generated: 2026-03-21 11:17:04
+# Generated: 2026-03-25 09:30:19
 # Repo: https://github.com/carolynboyle/projs
 # Branch: master
 # URL type: raw
-# Files: 62
+# Files: 68
 
 repo: https://github.com/carolynboyle/projs
 branch: master
 url_type: raw
-generated: '2026-03-21 11:17:04'
+generated: '2026-03-25 09:30:19'
 files:
 - path: .editorconfig
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/.editorconfig
 - path: .gitignore
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/.gitignore
+- path: .scratch/2026mar22-projs_logging_status.md
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/.scratch/2026mar22-projs_logging_status.md
 - path: README.md
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/README.md
 - path: docs/architecture.md
@@ -23,6 +25,8 @@ files:
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/images/projs_architecture.svg.png
 - path: docs/images/projs_gui_mockup.html
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/images/projs_gui_mockup.html
+- path: docs/images/projs_logging_flowchart.svg
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/images/projs_logging_flowchart.svg
 - path: docs/images/projs_project_creation_flow.svg
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/docs/images/projs_project_creation_flow.svg
 - path: docs/project_rules.md
@@ -107,6 +111,14 @@ files:
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/gui/theme.py
 - path: src/projs/language_actions.py
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/language_actions.py
+- path: src/projs/logging/__init__.py
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/logging/__init__.py
+- path: src/projs/logging/_foundation.py
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/logging/_foundation.py
+- path: src/projs/logging/_rotation.py
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/logging/_rotation.py
+- path: src/projs/logging/_writers.py
+  url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/logging/_writers.py
 - path: src/projs/manifest.py
   url: https://raw.githubusercontent.com/carolynboyle/projs/master/src/projs/manifest.py
 - path: src/projs/tmux.py

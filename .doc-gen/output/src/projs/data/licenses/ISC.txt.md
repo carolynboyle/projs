@@ -2,7 +2,7 @@
 
 **Path:** src/projs/data/licenses/ISC.txt
 **Syntax:** text
-**Generated:** 2026-03-22 18:36:59
+**Generated:** 2026-03-25 09:30:03
 
 ```text
 ISC License

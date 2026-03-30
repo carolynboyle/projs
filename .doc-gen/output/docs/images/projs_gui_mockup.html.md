@@ -2,7 +2,7 @@
 
 **Path:** docs/images/projs_gui_mockup.html
 **Syntax:** html
-**Generated:** 2026-03-22 18:36:59
+**Generated:** 2026-03-25 09:30:03
 
 ```html
 

@@ -2,7 +2,7 @@
 
 **Path:** src/projs/logging/__init__.py
 **Syntax:** python
-**Generated:** 2026-03-22 18:36:59
+**Generated:** 2026-03-25 09:30:03
 
 ```python
 """
@@ -19,6 +19,7 @@ Usage:
     logger.error("Something broke", project="myproject")
     logger.debug("Debug info", project="myproject")
 """
+# pylint: disable=no-name-in-module
 
 from projs.logging._foundation import _LoggerFoundation
 from projs.logging._writers import _LoggerWriters
@@ -44,8 +45,9 @@ class ProjectsLogger(_LoggerFoundation, _LoggerWriters, _LoggerRotation):
       - Global: /opt/venvs/tools/logs/projs.log (or package fallback)
       - Per-project: ~/.projects/logs/projects/<name>/{debug,info,error}.log
     """
-    pass
+    pass  # pylint: disable=unnecessary-pass
 
 
 __all__ = ["ProjectsLogger"]
+
 ```

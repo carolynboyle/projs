@@ -2,7 +2,7 @@
 
 **Path:** docs/yaml/projs_menus_yaml_with_ide.txt
 **Syntax:** text
-**Generated:** 2026-03-22 18:36:59
+**Generated:** 2026-03-25 09:30:03
 
 ```text
 # projs menu definitions
